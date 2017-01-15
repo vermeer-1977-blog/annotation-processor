@@ -15,6 +15,12 @@
  *  Copyright © 2017 Yamashita,Takahiro
  */
 /**
- * Pluggable Annotation Processing API を用いてコードを自動生成するクラス
+ * Pluggable Annotation Processing API を用いてコードを自動生成するクラス.<br>
+ * <br>
+ * 実装の流れ<br>
+ * <ol>
+ * <li>{@link AbstractClassFactory}を拡張してJavaFileを編集するクラスを実装する</li>
+ * <li>{@link ClassFactoryProcessor}のコンストラクタにて{@link JavaFileFactory}に自動生成クラスとして設定する</li>
+ * </ol>
  */
 package org.vermeer1977.infrastructure.annotation.processor;

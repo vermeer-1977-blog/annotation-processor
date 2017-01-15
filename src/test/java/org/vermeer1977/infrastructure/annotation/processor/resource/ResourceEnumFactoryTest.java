@@ -16,23 +16,26 @@
  */
 package org.vermeer1977.infrastructure.annotation.processor.resource;
 
-import java.util.Locale;
-import lombok.Builder;
-import org.vermeer1977.infrastructure.resourcebundle.CustomControl;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
- * ResourceBundleからEnumを作成する.<br>
- * ResourceBaseNameをClass名として、resourceのキーをフィールドとして作成する.
  *
  * @author Yamashita,Takahiro
  */
-@Builder
-public class ResourceBundleEnumFactory {
+public class ResourceEnumFactoryTest {
 
-    String resourceBaseName;
-
-    CustomControl customControl;
-
-    Locale locale;
+    @Test
+    public void resourceからEnumクラスを作成する() {
+        String resourceBaseName = "resource.message";
+        try {
+            ResourceEnumJavaFileFactory.of(resourceBaseName).writeTo();
+        } catch (URISyntaxException | IOException ex) {
+            Assert.fail(Arrays.toString(ex.getStackTrace()));
+        }
+    }
 
 }

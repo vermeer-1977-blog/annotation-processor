@@ -17,18 +17,19 @@
 package org.vermeer1977.infrastructure.annotation.processor.resource;
 
 import com.squareup.javapoet.JavaFile;
+import java.util.List;
+import java.util.stream.Collectors;
 import javax.lang.model.element.Element;
-import org.vermeer1977.infrastructure.annotation.processor.AbstractTargetClassFactory;
+import javax.lang.model.element.VariableElement;
+import org.vermeer1977.infrastructure.annotation.processor.AbstractClassFactory;
 import org.vermeer1977.infrastructure.annotation.processor.JavaFileElement;
-import org.vermeer1977.infrastructure.resourcebundle.classfactory.ResourceEnumFactory;
 
 /**
  * ResourceBundleの情報を元にEnumを自動生成する.<br>
  *
- *
  * @author Yamashita,Takahiro
  */
-public class GenerateResourceEnumFactory extends AbstractTargetClassFactory {
+public class GenerateResourceEnumFactory extends AbstractClassFactory {
 
     /**
      * {@inheritDoc}
@@ -41,27 +42,39 @@ public class GenerateResourceEnumFactory extends AbstractTargetClassFactory {
 
     /**
      * {@inheritDoc}
+     * 生成するEnum値にControlやLocaleを指定したい場合は、{@link org.vermeer1977.infrastructure.annotation.processor.resource.ResourceEnumJavaFileFactory}にBuilderに付加してください.
      */
     @Override
-    public JavaFile toJavaFile(Element element) {
+    public List<JavaFile> toJavaFiles(Element element) {
         JavaFileElement javaFileElement = JavaFileElement.of(element);
+        if (this.precondition(javaFileElement) == false) {
+            return null;
+        }
+        String packageName = javaFileElement.toPackageName();
 
-        JavaFile javaFile = ResourceEnumFactory.of("message")
-                .packageName(javaFileElement.toPackageName())
-                .toJavaFile();
-
-//        TypeSpec.Builder builder = TypeSpec.enumBuilder(javaFileElement.toClassName())
-//                .addEnumConstant("TEST");
-//
-//        TypeElement type = (TypeElement) element;
-//        StringBuilder sb = new StringBuilder();
-//        sb.append(type.getQualifiedName()).append("\n");
-//        List<? extends Element> enclosedElements = type.getEnclosedElements();
-//        for (Element elm : enclosedElements) {
-//            sb.append("\t").append(elm.getKind()).append(": ").append(elm.getSimpleName()).append("\n");
-//            System.out.println(sb);
-//        }
-        return javaFile;
+        return javaFileElement.filter(TargetResource.class).stream()
+                .map(VariableElement.class::cast)
+                .map(ve -> {
+                    return ResourceEnumJavaFileFactory.of(ve.getConstantValue().toString())
+                            .packageName(packageName)
+                            .toJavaFile();
+                })
+                .collect(Collectors.toList());
     }
 
+    /**
+     * ResourceからEnumを作成する事前条件
+     *
+     * @param javaFileElement
+     * @return 事前条件の充足判定。true：満たされている、false：満たされていない
+     */
+    boolean precondition(JavaFileElement javaFileElement) {
+        boolean hasNotErr = true;
+        List<Element> fieldFiltered = javaFileElement.filter(TargetResource.class);
+        if (fieldFiltered.isEmpty()) {
+            this.printErrMessage("GenerateResourceEnum.class annotated. TargetResourceName.class annotated field is required.", javaFileElement.getElement());
+            hasNotErr = false;
+        }
+        return hasNotErr;
+    }
 }

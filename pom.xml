@@ -166,7 +166,7 @@
                 <configuration>
                     <effort>Max</effort> <!-- 検査強度 -->
                     <threshold>Low</threshold> <!-- 任意 -->
-                    <failOnError>fakse</failOnError> <!-- Error で build failure にする -->
+                    <failOnError>true</failOnError> <!-- Error で build failure にする -->
                     <!-- ファイル出力関連 start -->
                     <xmlOutput>true</xmlOutput>
                     <outputEncoding>UTF-8</outputEncoding>

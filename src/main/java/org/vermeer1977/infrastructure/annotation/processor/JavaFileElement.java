@@ -16,6 +16,7 @@
  */
 package org.vermeer1977.infrastructure.annotation.processor;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -24,7 +25,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
 /**
- * JavaFileを編集する際のヘルパクラス
+ * JavaFileの作成時にElementを元に情報を編集するヘルパクラス
  *
  * @author Yamashita,Takahiro
  */
@@ -37,6 +38,15 @@ public class JavaFileElement {
     }
 
     /**
+     * 処理対象のElementを返却する
+     *
+     * @return 処理対象の{@link javax.lang.model.element.Element}
+     */
+    public Element getElement() {
+        return this.element;
+    }
+
+    /**
      * Factory
      *
      * @param element AnnotaionProcessorで取得した要素
@@ -46,10 +56,30 @@ public class JavaFileElement {
         return new JavaFileElement(element);
     }
 
-    public List<Element> filterKind(ElementKind elementKind) {
-        TypeElement type = (TypeElement) element;
+    /**
+     * {@link javax.lang.model.element.ElementKind}が一致する要素をすべて取得する
+     *
+     * @param elementKind 取得対象の{@link javax.lang.model.element.ElementKind}
+     * @return 抽出した要素リスト
+     */
+    public List<Element> filter(ElementKind elementKind) {
+        TypeElement type = (TypeElement) this.element;
         return type.getEnclosedElements().stream()
                 .filter(e -> e.getKind().equals(elementKind))
+                .collect(Collectors.toList());
+    }
+
+    /**
+     * 指定のAnnotationが付与された要素を取得する
+     *
+     * @param <A> Annotationクラス
+     * @param annotation 取得対象のAnnotation
+     * @return 抽出した要素リスト
+     */
+    public <A extends Annotation> List<Element> filter(Class<A> annotation) {
+        TypeElement type = (TypeElement) this.element;
+        return type.getEnclosedElements().stream()
+                .filter(e -> e.getAnnotation(annotation) != null)
                 .collect(Collectors.toList());
     }
 

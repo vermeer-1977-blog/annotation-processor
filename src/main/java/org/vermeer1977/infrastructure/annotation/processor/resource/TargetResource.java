@@ -22,13 +22,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * ResourceBundleの情報を元にEnumを自動生成する対象となるクラスを指定するアノテーション.<br>
- * 本インターフェースをクラスにアノテートすることで、{@link TargetResource}をアノテートしたフィールドの値のリソースを取得してEnumClassを作成する.
+ * 生成する対象とするResourceBundleのBaseName
  *
+ * @see GenerateResourceEnum
  * @author Yamashita,Takahiro
  */
-@Target(ElementType.TYPE)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.CLASS)
-public @interface GenerateResourceEnum {
+public @interface TargetResource {
 
 }

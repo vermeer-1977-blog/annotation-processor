@@ -18,27 +18,23 @@ package org.vermeer1977.infrastructure.annotation.processor;
  */
 import com.squareup.javapoet.JavaFile;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
+import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
 import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
-import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import org.vermeer1977.infrastructure.annotation.processor.resource.GenerateResourceEnumFactory;
 
 /**
  * Enumの引数つきの定数のフィールドから enum 型の enum 定数を返すユーティリティクラスを生成する.<br>
- * コード生成をしたい場合、AbstractTargetClassFactoryをextendしたクラスを作成してprocessのtargetClassFactoriesの処理対象クラスとして追加する.
- *
- * @see AbstractTargetClassFactory
+ * コード生成をするクラスはコンストラクタの{@literal JavaFileFactory}に指定する.
  *
  * @author Yamashita,Takahiro
  */
@@ -46,22 +42,43 @@ import org.vermeer1977.infrastructure.annotation.processor.resource.GenerateReso
 @SupportedAnnotationTypes({"*"})
 public class ClassFactoryProcessor extends AbstractProcessor {
 
-    private Filer filer;
-
     private final boolean isDebug;
+    private Messager messager;
+    private Filer filer;
+    private JavaFileFactory javaFileFactory;
 
+    /**
+     * デフォルトではデバッグ出力はしない
+     */
     public ClassFactoryProcessor() {
-        this.isDebug = false;
+        this(false);
     }
 
+    /**
+     * デバッグ出力の有無を指定
+     *
+     * @param isDebug true:デバッグ出力あり、false、デバッグ出力なし
+     */
     public ClassFactoryProcessor(boolean isDebug) {
         this.isDebug = isDebug;
     }
 
+    /**
+     * 初期化時にClassを生成するFactoryを設定する
+     *
+     * @param processingEnv 環境情報
+     */
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         this.filer = processingEnv.getFiler();
+        this.messager = super.processingEnv.getMessager();
+
+        ClassFactoryManager classFactoryManager = ClassFactoryManager
+                .of(this.messager)
+                .append(new GenerateResourceEnumFactory())
+                .build();
+        this.javaFileFactory = new JavaFileFactory(classFactoryManager);
     }
 
     /**
@@ -73,21 +90,8 @@ public class ClassFactoryProcessor extends AbstractProcessor {
      */
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        List<AbstractTargetClassFactory> targetClassFactories = Arrays.asList(new GenerateResourceEnumFactory());
-
-        List<JavaFile> javaFiles = new ArrayList<>();
-
-        for (TypeElement typeElement : annotations) {
-            for (Element element : roundEnv.getElementsAnnotatedWith(typeElement)) {
-                List<JavaFile> elementJavaFiles = targetClassFactories.stream()
-                        .filter(target -> target.filter(element))
-                        .map(target -> target.toJavaFile(element))
-                        .collect(Collectors.toList());
-                javaFiles.addAll(elementJavaFiles);
-            }
-        }
-
-        if (javaFiles.isEmpty() || javaFiles.get(0) == null) {
+        List<JavaFile> javaFiles = this.javaFileFactory.create(annotations, roundEnv);
+        if (javaFiles.isEmpty()) {
             return true;
         }
 
@@ -109,12 +113,11 @@ public class ClassFactoryProcessor extends AbstractProcessor {
      *
      * @param javaFile コンソールに出力したいJavaFile
      */
-    private void debug(JavaFile javaFile) {
+    void debug(JavaFile javaFile) {
         if (this.isDebug == false) {
             return;
         }
         System.out.println();
         System.out.println(javaFile.toString());
     }
-
 }

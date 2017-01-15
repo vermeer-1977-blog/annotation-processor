@@ -14,21 +14,29 @@
  *
  *  Copyright © 2017 Yamashita,Takahiro
  */
-package org.vermeer1977.infrastructure.annotation.processor.resource;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.vermeer1977.infrastructure.annotation.processor;
 
 /**
- * ResourceBundleの情報を元にEnumを自動生成する対象となるクラスを指定するアノテーション.<br>
- * 本インターフェースをクラスにアノテートすることで、{@link TargetResource}をアノテートしたフィールドの値のリソースを取得してEnumClassを作成する.
+ * クラス生成中に発生した例外
  *
  * @author Yamashita,Takahiro
  */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.CLASS)
-public @interface GenerateResourceEnum {
+public class ClassFactoryException extends RuntimeException {
 
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Creates a new instance of <code>ClassFactoryProcessorException</code> without detail message.
+     */
+    public ClassFactoryException() {
+    }
+
+    /**
+     * Constructs an instance of <code>ClassFactoryProcessorException</code> with the specified detail message.
+     *
+     * @param msg the detail message.
+     */
+    public ClassFactoryException(String msg) {
+        super(msg);
+    }
 }
