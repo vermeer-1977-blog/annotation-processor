@@ -23,11 +23,6 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeSpec;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.Locale;
 import java.util.ResourceBundle;
@@ -107,29 +102,6 @@ public class ResourceEnumToJavaFile {
         public Builder locale(Locale locale) {
             this.locale = locale;
             return this;
-        }
-
-        /**
-         * ResourceからEnumClassを生成します.主にテストや実行結果確認に使用するメソッドです.
-         * <P>
-         * AnnotationProcessorで出力するのではなく、個別に出力したい場合に使用することを想定しています.
-         * コンソールでの簡易確認にはSystem,out出力結果を、ClassLoaderによる出力は実際に作成されたクラスの検証用に使用することを想定しています.<br>
-         *
-         * @throws java.net.URISyntaxException JavaFile.writeToの出力先のURI編集時に例外が発生した場合
-         * @throws java.io.IOException JavaFile.writeToの出力時に例外が発生した場合
-         */
-        public void writeTo() throws URISyntaxException, IOException {
-            JavaFile javaFile = this.toJavaFile();
-
-            /* コンソールでの簡易確認用にSystem,outに出力する */
-            javaFile.writeTo(System.out);
-
-            /* ClassLoaderは実際に作成されたクラスの検証用に作成する. */
-            ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-            URL url = classLoader.getResource("");
-            Path filer;
-            filer = Paths.get(url.toURI());
-            javaFile.writeTo(filer);
         }
 
         /**
@@ -328,6 +300,17 @@ public class ResourceEnumToJavaFile {
          */
         private String toEnumField(String key) {
             return key.toUpperCase(Locale.ENGLISH);
+        }
+
+        /**
+         * JavaFileのコードの文字列を返却する.
+         *
+         * @return JavaFileのコードの文字列
+         */
+        @Override
+        public String toString() {
+            JavaFile javaFile = this.toJavaFile();
+            return javaFile.toString();
         }
     }
 }

@@ -48,6 +48,8 @@ public class SourceFileReader {
             in.lines()
                     .forEachOrdered(line -> {
                         sb.append(line);
+                        sb.append("\n"
+                        );
                     });
             this.sourceCode = sb.toString();
         } catch (IOException ex) {
@@ -87,5 +89,15 @@ public class SourceFileReader {
         public CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException {
             return this.content;
         }
+    }
+
+    /**
+     * Javaファイルから取得したコードの文字列を返却する.
+     *
+     * @return コードの文字列
+     */
+    @Override
+    public String toString() {
+        return this.sourceCode;
     }
 }
