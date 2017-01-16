@@ -33,9 +33,8 @@ import javax.lang.model.element.TypeElement;
 import org.vermeer1977.infrastructure.annotation.processor.resource.GenerateResourceEnumFactory;
 
 /**
- * Enumの引数つきの定数のフィールドから enum 型の enum 定数を返すユーティリティクラスを生成する.<br>
- * コード生成をするクラスはコンストラクタの{@literal JavaFileFactory}に指定する.
- *
+ * AnnotationProcessorにてコード生成を行うクラスです.
+ * <P>
  * @author Yamashita,Takahiro
  */
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
@@ -48,24 +47,31 @@ public class ClassFactoryProcessor extends AbstractProcessor {
     private JavaFileFactory javaFileFactory;
 
     /**
-     * デフォルトではデバッグ出力はしない
+     * インスタンスを構築します.
+     * <P>
+     * デフォルトではデバッグ出力はしません.
      */
     public ClassFactoryProcessor() {
         this(false);
     }
 
     /**
-     * デバッグ出力の有無を指定
+     * デバッグ出力の有無を指定してインスタンスを構築します.
+     * <P>
+     * テストユニットにて生成コードの確認をしたい場合に使用することを想定しています.
      *
-     * @param isDebug true:デバッグ出力あり、false、デバッグ出力なし
+     * @param isDebug true:デバッグ出力をする
      */
     public ClassFactoryProcessor(boolean isDebug) {
         this.isDebug = isDebug;
     }
 
     /**
-     * 初期化時にClassを生成するFactoryを設定する
+     * 初期化をします.
+     * <P>
+     * クラス生成をするFactoryクラスを{@link ClassFactoryManager}の引数として実装をしてください.
      *
+     * @see ClassFactoryManager
      * @param processingEnv 環境情報
      */
     @Override
@@ -82,11 +88,11 @@ public class ClassFactoryProcessor extends AbstractProcessor {
     }
 
     /**
-     * マーカーのannotationからクラスを生成する
+     * Annotationマーカーしたクラスからクラスを生成します.
      *
      * @param annotations SupportedAnnotationTypesで検出されたAnnotationセット
      * @param roundEnv 注釈処理ラウンド
-     * @return 生成が正常終了した場合はtrue、異常終了した場合はfalse。生成した結果が０件またはNullの場合は該当なしとして無視するためtrueとする
+     * @return 生成が正常終了した場合はtrue、異常終了した場合はfalse. 生成した結果が０件またはNullの場合は該当なしとして無視するためtrueとします.
      */
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
@@ -108,8 +114,9 @@ public class ClassFactoryProcessor extends AbstractProcessor {
     }
 
     /**
-     * AnnotationProcessorで生成したコードを確認するためにコンソールに出力する.<br>
-     * Debugの時のみ出力する.
+     * AnnotationProcessorで生成したコードを確認するためにコンソールに出力します.
+     * <P>
+     * Debugの時のみ出力します.
      *
      * @param javaFile コンソールに出力したいJavaFile
      */

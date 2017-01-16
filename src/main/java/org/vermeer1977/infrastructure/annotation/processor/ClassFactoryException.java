@@ -17,7 +17,9 @@
 package org.vermeer1977.infrastructure.annotation.processor;
 
 /**
- * クラス生成中に発生した例外
+ * AnnotationProcessorによりクラス生成中に発生した例外です.
+ * <P>
+ * 例外発生個所を明確にすることを目的としたRuntimeExceptionのラッパーであり独自の実装はしていません.
  *
  * @author Yamashita,Takahiro
  */

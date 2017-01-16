@@ -15,7 +15,7 @@
  *  Copyright © 2017 Yamashita,Takahiro
  */
 /**
- * Pluggable Annotation Processing API を用いてコードを自動生成するクラス.<br>
+ * Pluggable Annotation Processing API を用いてコードを自動生成するクラス群です.<br>
  * <br>
  * 実装の流れ<br>
  * <ol>

@@ -24,7 +24,7 @@ import javax.lang.model.element.Element;
 import javax.tools.Diagnostic;
 
 /**
- * AnnotationProcessorによるClass生成の基底となる抽象クラス.
+ * AnnotationProcessorによるクラス生成において、JavaFile生成クラスとの連携を行う基底となる抽象クラス.
  *
  * @author Yamashita,Takahiro
  */
@@ -34,28 +34,32 @@ public abstract class AbstractClassFactory {
     private Messager messager;
 
     /**
-     * 生成マーカーとなるAnnotationInterfaceを指定する
+     * 指定した生成対象マーカーとなるAnnotationInterfaceからインスタンスを構築します.
      *
-     * @param <T> AnnotaionInterface
-     * @param targetAnnotaion 生成マーカーとなるAnnotationInterface
+     * @param <A> 生成対象マーカーインターフェースの型
+     * @param targetAnnotaion 生成マーカーとなるAnnotationInterface（必須）
+     * @throws ClassFactoryException 必須項目が未設定の場合
      */
-    public <T extends Annotation> AbstractClassFactory(Class<T> targetAnnotaion) {
+    public <A extends Annotation> AbstractClassFactory(Class<A> targetAnnotaion) {
+        if (targetAnnotaion == null) {
+            throw new ClassFactoryException("AbstractClassFactory must set targetAnnotaion.");
+        }
         this.targetAnnotaion = targetAnnotaion;
     }
 
     /**
-     * AnnotationProcessorの処理時に出力するメッセージ用の{@link javax.annotation.processing.Messager}.
+     * AnnotationProcessorの処理時に出力するメッセージ用の{@link javax.annotation.processing.Messager}を設定します.
      *
-     * @param messager
+     * @param messager メッセージ出力用の{@link javax.annotation.processing.Messager}
      */
     public void setMessager(Messager messager) {
         this.messager = messager;
     }
 
     /**
-     * AnnotationProcessorの処理時に出力するメッセージ用の{@link javax.annotation.processing.Messager}を返却する.
+     * AnnotationProcessorの処理時に出力するメッセージ用の{@link javax.annotation.processing.Messager}を返却します.
      *
-     * @return
+     * @return メッセージ出力用の{@link javax.annotation.processing.Messager}
      */
     Messager getMessager() {
         if (this.messager == null) {
@@ -65,30 +69,42 @@ public abstract class AbstractClassFactory {
     }
 
     /**
-     * エラーメッセージを出力
+     * AnnotationProcessorによるJavaFile作成時のエラーメッセージを出力します.
+     * <P>
+     * 事前に{@link #setMessager(javax.annotation.processing.Messager)
+     * }にて出力用の{@link javax.annotation.processing.Messager}を設定しておいてください.
      *
      * @param message 出力メッセージ
      * @param element 対象Element
+     * @throws ClassFactoryException Messagerを設定していない場合
      */
     public void printErrMessage(String message, Element element) {
         this.getMessager().printMessage(Diagnostic.Kind.ERROR, message, element);
     }
 
     /**
-     * クラス生成対象フィルター
+     * 処理対象Annotationの有無判定.
+     * <P>
+     * 処理対象Annotationはコンストラクタにて指定します.
      *
-     * @param element 注釈がついている要素
-     * @return クラス生成対象の場合:true。対象外の場合:false
+     * @param element 処理対象を抽出元となる{@link javax.lang.model.element.Element}（必須）
+     * @return JavaFile生成対象の場合、true
+     * @throws ClassFactoryException 必須項目が未設定の場合
      */
     public boolean filter(Element element) {
+        if (element == null) {
+            throw new ClassFactoryException("AbstractClassFactory must set targetAnnotaion.");
+        }
         return element.getAnnotation(targetAnnotaion) != null;
     }
 
     /**
-     * 注釈がついている要素からJavaFileリストを作成する.<br>
-     * １つのAnnotationをもったクラスから複数のJavaFileを作成することを考慮して戻り値はリストとする.
+     * Annotationがついている要素からJavaFileリストを作成します.
+     * <P>
+     * １つのAnnotationをもったクラスから複数のJavaFileを作成することを考慮して戻り値はリストとします.
      *
-     * @param element 注釈がついている要素
+     *
+     * @param element 処理対象のAnnotationがついている要素
      * @return 生成したJavaFileリスト
      */
     public abstract List<JavaFile> toJavaFiles(Element element);

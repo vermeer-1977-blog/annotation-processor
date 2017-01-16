@@ -25,8 +25,9 @@ import org.vermeer1977.infrastructure.annotation.processor.AbstractClassFactory;
 import org.vermeer1977.infrastructure.annotation.processor.JavaFileElement;
 
 /**
- * ResourceBundleの情報を元にEnumを自動生成する.<br>
- *
+ * {@code GenerateResourceEnum}アノテーションを付与しているクラスからEnumを生成します.
+ * <P>
+ * @see GenerateResourceEnum
  * @author Yamashita,Takahiro
  */
 public class GenerateResourceEnumFactory extends AbstractClassFactory {
@@ -42,7 +43,9 @@ public class GenerateResourceEnumFactory extends AbstractClassFactory {
 
     /**
      * {@inheritDoc}
-     * 生成するEnum値にControlやLocaleを指定したい場合は、{@link org.vermeer1977.infrastructure.annotation.processor.resource.ResourceEnumJavaFileFactory}にBuilderに付加してください.
+     * <P>
+     * 生成するEnum値にControlやLocaleを適用したい場合は、本メソッド内の{@link org.vermeer1977.infrastructure.annotation.processor.resource.ResourceEnumToJavaFile}
+     * にパラメーターとして追加してください. なお、JavaFileの編集は{@link ResourceEnumToJavaFile}にて行います.
      */
     @Override
     public List<JavaFile> toJavaFiles(Element element) {
@@ -55,7 +58,7 @@ public class GenerateResourceEnumFactory extends AbstractClassFactory {
         return javaFileElement.filter(TargetResource.class).stream()
                 .map(VariableElement.class::cast)
                 .map(ve -> {
-                    return ResourceEnumJavaFileFactory.of(ve.getConstantValue().toString())
+                    return ResourceEnumToJavaFile.of(ve.getConstantValue().toString())
                             .packageName(packageName)
                             .toJavaFile();
                 })
@@ -66,7 +69,7 @@ public class GenerateResourceEnumFactory extends AbstractClassFactory {
      * ResourceからEnumを作成する事前条件
      *
      * @param javaFileElement
-     * @return 事前条件の充足判定。true：満たされている、false：満たされていない
+     * @return 事前条件を充足している場合、true
      */
     boolean precondition(JavaFileElement javaFileElement) {
         boolean hasNotErr = true;

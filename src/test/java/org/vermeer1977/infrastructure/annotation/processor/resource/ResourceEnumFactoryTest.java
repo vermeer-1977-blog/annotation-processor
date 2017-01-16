@@ -32,7 +32,7 @@ public class ResourceEnumFactoryTest {
     public void resourceからEnumクラスを作成する() {
         String resourceBaseName = "resource.message";
         try {
-            ResourceEnumJavaFileFactory.of(resourceBaseName).writeTo();
+            ResourceEnumToJavaFile.of(resourceBaseName).writeTo();
         } catch (URISyntaxException | IOException ex) {
             Assert.fail(Arrays.toString(ex.getStackTrace()));
         }

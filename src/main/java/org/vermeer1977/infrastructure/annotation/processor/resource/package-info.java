@@ -42,14 +42,16 @@
  *
  * <p>
  * 実装例
- * <pre>{@code
- * @GenerateResourceEnum
+ * <pre>
+ * <code>
+ *{@literal @GenerateResourceEnum}
  * public class SampleEnum {
  *
- * @TargetResource
- * final String resourceName = "resource.message";
+ *     {@literal @TargetResource}
+ *      final String resourceName = "resource.message";
  * }
- * code}
+ * </code>
+ *
  * </pre>
  * <p>
  * 補足事項

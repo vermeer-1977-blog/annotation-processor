@@ -16,17 +16,21 @@
  */
 package org.vermeer1977.infrastructure.annotation.processor.resource;
 
+import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 生成する対象とするResourceBundleのBaseName
+ * 生成する対象とするResourceBundleのBaseNameを指定するフィールドに付与するアノテーションです.
+ * <P>
+ * このアノテーションが付与されるフィールドは、GenerateResourceEnumインタフェースのメンバでなければいけません。
  *
  * @see GenerateResourceEnum
  * @author Yamashita,Takahiro
  */
+@Documented
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.CLASS)
 public @interface TargetResource {

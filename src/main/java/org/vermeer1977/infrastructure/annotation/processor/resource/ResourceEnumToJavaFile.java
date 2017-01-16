@@ -38,28 +38,13 @@ import javax.lang.model.element.Modifier;
 import lombok.NonNull;
 
 /**
- * ResourceBundleからEnumクラスを生成する.<br>
- * Control と Localeは任意項目.<br>
- * <br>
- * 参照するpropertiesファイルの名称が"hoge.fuga.message"<br>
- * 内容が{@code
- * msg001=testMessage1
- * msg002=testMessage2
- * }
- * の場合に生成されるクラス<br>
- * <pre>
- * {@code
- * import java.lang.String;
- *
- *
- * }
- * </pre>
- *
- * {@link org.vermeer1977.infrastructure.resourcebundle.CustomControl}による指定も可能
+ * ResourceBundleからEnumクラスのJavaFileを生成するクラスです.
+ * <P>
+ * Control と Localeは任意で指定することが出来ます.<br>
  *
  * @author Yamashita,Takahiro
  */
-public class ResourceEnumJavaFileFactory {
+public class ResourceEnumToJavaFile {
 
     /**
      * 必須項目の設定
@@ -68,7 +53,7 @@ public class ResourceEnumJavaFileFactory {
      * @return builderクラス
      */
     public static Builder of(@NonNull String resourceBaseName) {
-        return new ResourceEnumJavaFileFactory.Builder(resourceBaseName);
+        return new ResourceEnumToJavaFile.Builder(resourceBaseName);
     }
 
     /**
@@ -81,11 +66,6 @@ public class ResourceEnumJavaFileFactory {
         private Control control;
         private Locale locale;
 
-        /**
-         * 必須項目（リソースバンドルのBaseName）を設定
-         *
-         * @param resourceBaseName
-         */
         public Builder(@NonNull String resourceBaseName) {
             this.resourceBaseName = resourceBaseName;
         }
@@ -93,7 +73,7 @@ public class ResourceEnumJavaFileFactory {
         /**
          * ResourceBundleの任意引数であるpackageを設定します.<br>
          *
-         * @param packageName
+         * @param packageName パッケージパスの文字列
          * @return chainに使用するbuilderクラス
          */
         public Builder packageName(String packageName) {
@@ -105,7 +85,7 @@ public class ResourceEnumJavaFileFactory {
          * ResourceBundleの任意引数であるCustomControlを設定します
          *
          * @see java.util.ResourceBundle.Control
-         * @param control
+         * @param control {@link java.util.ResourceBundle.Control}または、そのインターフェースを実装したクラス
          * @return chainに使用するbuilderクラス
          */
         public Builder control(Control control) {
@@ -114,7 +94,7 @@ public class ResourceEnumJavaFileFactory {
         }
 
         /**
-         * ロケールを設定する
+         * ロケールを設定します.
          *
          * @param locale ロケール
          * @return chainに使用するbuilderクラス
@@ -125,12 +105,13 @@ public class ResourceEnumJavaFileFactory {
         }
 
         /**
-         * ResourceからEnumClassを生成する.<br>
-         * AnnotationProcessorで出力するのではなく、個別に出力したい場合に使用する.<br>
-         * コンソールでの簡易確認にSystem,outに出力するClassLoaderは実際に作成されたクラスの検証用に作成する.<br>
+         * ResourceからEnumClassを生成します.主にテストや実行結果確認に使用するメソッドです.
+         * <P>
+         * AnnotationProcessorで出力するのではなく、個別に出力したい場合に使用することを想定しています.
+         * コンソールでの簡易確認にはSystem,out出力結果を、ClassLoaderによる出力は実際に作成されたクラスの検証用に使用することを想定しています.<br>
          *
-         * @throws java.net.URISyntaxException JavaFile.writeToの出力先のURI編集時に発生する例外
-         * @throws java.io.IOException JavaFile.writeToの出力時に発生する例外
+         * @throws java.net.URISyntaxException JavaFile.writeToの出力先のURI編集時に例外が発生した場合
+         * @throws java.io.IOException JavaFile.writeToの出力時に例外が発生した場合
          */
         public void writeTo() throws URISyntaxException, IOException {
             JavaFile javaFile = this.toJavaFile();
@@ -147,7 +128,7 @@ public class ResourceEnumJavaFileFactory {
         }
 
         /**
-         * ResourceBundleのkeyとvalueからJavaFileを作成する
+         * ResourceBundleのkeyとvalueからJavaFileを作成します.
          *
          * @return 生成したJavaFile
          */
@@ -218,7 +199,7 @@ public class ResourceEnumJavaFileFactory {
             ParameterSpec paramControl = ParameterSpec.builder(Control.class, "control").build();
             typeSpecBuilder
                     .addMethod(MethodSpec.methodBuilder("setControl")
-                            .addJavadoc("任意設定項目：ResourceBundleから値を取得する際に使用するControlを設定する.<br>\n")
+                            .addJavadoc("任意設定項目：ResourceBundleから値を取得する際に使用するControlを設定します.<br>\n")
                             .addJavadoc("未設定の場合、ResourceBundleのデフォルトで処理します.<br>\n")
                             .addJavadoc("本設定はロケールのFallbackを設定したい場合などに使用します.<br>")
                             .addJavadoc("Caution:this feild is Thread-Unsafe.\n\n")
@@ -235,7 +216,7 @@ public class ResourceEnumJavaFileFactory {
             ParameterSpec paramLocale = ParameterSpec.builder(Locale.class, "locale").build();
             typeSpecBuilder
                     .addMethod(MethodSpec.methodBuilder("setLocale")
-                            .addJavadoc("任意設定項目：ResourceBundleから値を取得する際に使用するLocaleを設定する.<br>\n")
+                            .addJavadoc("任意設定項目：ResourceBundleから値を取得する際に使用するLocaleを設定します.<br>\n")
                             .addJavadoc("未設定の場合、デフォルトロケールで処理します.<br>\n")
                             .addJavadoc("Caution:this feild is Thread-Unsafe.\n\n")
                             .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
@@ -252,9 +233,9 @@ public class ResourceEnumJavaFileFactory {
             typeSpecBuilder
                     .addMethod(MethodSpec.methodBuilder("toString")
                             .addAnnotation(Override.class)
-                            .addJavadoc("リソースの値を返却する.<br>\n")
-                            .addJavadoc("例外捕捉時の対応については、リソースの取得が出来なかった場合に最低限状況判別が出来うるメッセージを表示させるための措置.<br>\n")
-                            .addJavadoc("あわせて、メッセージIDを付与することでリソースの取得が出来ていなかったことを可視できるようにしておく.<br>\n")
+                            .addJavadoc("リソースの値を返却します.<br>\n")
+                            .addJavadoc("例外捕捉時の対応については、リソースの取得が出来なかった場合に最低限状況判別が出来うるメッセージを表示させるための措置です.<br>\n")
+                            .addJavadoc("あわせてメッセージIDを付与してリソースの取得が出来ていなかったことを可視できるようにしています.<br>\n")
                             .addJavadoc("@return 当該定数に該当するリソースの値\n")
                             .addModifiers(Modifier.PUBLIC)
                             .addCode(CodeBlock.builder()
@@ -285,9 +266,7 @@ public class ResourceEnumJavaFileFactory {
             ParameterSpec paramMessageParams = ParameterSpec.builder(Object[].class, "params").build();
             typeSpecBuilder
                     .addMethod(MethodSpec.methodBuilder("format")
-                            .addJavadoc("埋め込み文字を置換した文字列を返却する.<br>\n")
-                            .addJavadoc("例外捕捉時の対応については、リソースの取得が出来なかった場合に最低限状況判別が出来うるメッセージを表示させるための措置.<br>\n")
-                            .addJavadoc("あわせて、メッセージIDを付与することでリソースの取得が出来ていなかったことを可視できるようにしておく.\n")
+                            .addJavadoc("埋め込み文字の置換をした文字列を返却します.<br>\n")
                             .addJavadoc("@return 埋め込み文字を置換した文字列\n")
                             .addModifiers(Modifier.PUBLIC)
                             .addParameter(paramMessageParams)
@@ -305,8 +284,8 @@ public class ResourceEnumJavaFileFactory {
         }
 
         /**
-         * ResourceBundleを取得する
-         *
+         * ResourceBundleを取得します.
+         * <P>
          * @return 取得したResourceBundle
          */
         private ResourceBundle getBundle() {
@@ -327,7 +306,7 @@ public class ResourceEnumJavaFileFactory {
         }
 
         /**
-         * リソース名から編集したクラス名を編集する
+         * リソース名から編集したクラス名を編集します.
          *
          * @return リソース名から始めの１文字を大文字にした文字列
          */
@@ -338,7 +317,7 @@ public class ResourceEnumJavaFileFactory {
         }
 
         /**
-         * 全ての文字を大文字に変換したものをEnumのフィールドとして編集する
+         * 全ての文字を大文字に変換したものをEnumのフィールドとして編集します.
          *
          * @return 全てを大文字にした文字列
          */

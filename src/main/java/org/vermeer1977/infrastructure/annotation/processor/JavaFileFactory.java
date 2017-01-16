@@ -26,7 +26,7 @@ import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 
 /**
- * Processorで取得した情報からJavaFileを作成するFactory.
+ * Processorで取得した情報からJavaFileを作成するFactoryクラスです.
  *
  * @author Yamashita,Takahiro
  */
@@ -35,11 +35,15 @@ public class JavaFileFactory {
     private final ClassFactoryManager classFactoryManager;
 
     /**
-     * コンストラクタ
+     * 指定したクラス生成Factory管理クラスからインスタンスを構築します.
      *
-     * @param classFactoryManager AnnotationProcessorでクラスを生成するFactoryのFirstClassCollection管理クラス
+     * @param classFactoryManager AnnotationProcessorでクラスを生成するFactoryのFirstClassCollection管理クラス（必須）
+     * @throws ClassFactoryException 必須項目が未設定の場合
      */
     public JavaFileFactory(ClassFactoryManager classFactoryManager) {
+        if (classFactoryManager == null) {
+            throw new ClassFactoryException("JavaFileFactory must set classFactoryManager.");
+        }
         this.classFactoryManager = classFactoryManager;
     }
 

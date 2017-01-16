@@ -28,8 +28,8 @@ import javax.tools.SimpleJavaFileObject;
 
 /**
  * リソースからJavaFileObjectを作成するクラス.
- * {@link com.google.testing.compile.CompileTester.GeneratedPredicateClause#generatesSources(javax.tools.JavaFileObject, javax.tools.JavaFileObject...) }では
- * CodeがUTF-8のためマルチバイトが含まれていると文字化けするので、文字コードを考慮したクラス.<br>
+ * {@literal com.google.testing.compile.CompileTester.GeneratedPredicateClause#generatesSources(javax.tools.JavaFileObject, javax.tools.JavaFileObject...) }では
+ * ソースコードの定数にUTF-8のマルチバイトが含まれる場合、文字化けする.本クラスではUTF-8を考慮したJavaFileObjectを生成します.<br>
  *
  * @author Yamashita,Takahiro
  */
@@ -38,7 +38,7 @@ public class SourceFileReader {
     private String sourceCode;
 
     /**
-     * JavaファイルのURLからソースファイルを取得してUTF-8の文字列として処理できるようにする
+     * JavaファイルのURLからソースファイルを取得してUTF-8の文字列として処理できるようにします.
      *
      * @param url 参照元のJavaファイルのURL
      */
@@ -56,24 +56,24 @@ public class SourceFileReader {
     }
 
     /**
-     * ソースコード文字列からJavaFileObjectを作成する.<br>
+     * 文字列ソースコードからJavaFileObjectを作成します.
      *
-     * @return
+     * @return 文字列から生成したJavaFIleObject
      */
     public JavaFileObject toJavaFileObject() {
         return new SourceFileReader.StringJavaFileObject("", this.sourceCode);
     }
 
     /**
-     * 文字列からJavaFileObjectを作成するクラス
+     * 文字列からJavaFileObjectを作成します.
      */
     private static class StringJavaFileObject extends SimpleJavaFileObject {
 
         private final String content;
 
         /**
-         *
-         * @param source
+         * @param className 生成クラスファイル名
+         * @param source 生成JavaFileObjectのコード文字列
          */
         public StringJavaFileObject(String className, String source) {
             super(URI.create("string:///" + className.replace('.', '/') + Kind.SOURCE.extension), Kind.SOURCE);

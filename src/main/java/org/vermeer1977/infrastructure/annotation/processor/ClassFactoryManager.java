@@ -21,7 +21,7 @@ import java.util.List;
 import javax.annotation.processing.Messager;
 
 /**
- * AnnotationProcessorでクラスを生成するFactoryのFirstClassCollection管理クラス.
+ * AnnotationProcessorでクラスを生成するFactoryクラスのFirstClassCollection管理クラスです.
  *
  * @author Yamashita,Takahiro
  */
@@ -37,7 +37,7 @@ public class ClassFactoryManager {
     }
 
     /**
-     * クラス生成Factoryリストを取得する
+     * クラス生成Factoryクラスのリストを返却します.
      *
      * @return クラス生成Factoryリスト
      */
@@ -46,17 +46,22 @@ public class ClassFactoryManager {
     }
 
     /**
-     * 必須項目の設定
+     * 必須項目を設定します.
      *
-     * @param messager JavaFile作成時のメッセージ出力に使用する{@link javax.annotation.processing.Messager}
-     * @return
+     * @param messager JavaFile作成時のメッセージ出力に使用する{@link javax.annotation.processing.Messager}（必須）
+     * @return {@link ClassFactoryManager.Builder}
+     * @throws ClassFactoryException 必須項目が未設定の場合
      */
     public static Builder of(Messager messager) {
+        if (messager == null) {
+            throw new ClassFactoryException("ClassFactoryManager must set messager.");
+        }
         return new ClassFactoryManager.Builder(messager);
+
     }
 
     /**
-     * コードを自動生成するクラスのBuilder
+     * {@link ClassFactoryManager}のBuilder
      */
     public static class Builder {
 
@@ -64,7 +69,7 @@ public class ClassFactoryManager {
         private final List<AbstractClassFactory> classFactories;
 
         /**
-         * 必須項目の設定
+         * 必須項目を設定します.
          *
          * @param messager JavaFile作成時のメッセージ出力に使用する{@link javax.annotation.processing.Messager}
          */
@@ -74,10 +79,10 @@ public class ClassFactoryManager {
         }
 
         /**
-         * JavaFileを作成するFactoryを設定する
+         * JavaFileを作成するFactoryクラスを追加します.
          *
-         * @param <E> 生成を行うクラスの型
-         * @param classFactory 生成を行うクラス
+         * @param <E> AnnotationProcessorにてクラス生成を行うクラスの型
+         * @param classFactory AnnotationProcessorにてクラス生成を行うクラス
          * @return chainに使用するbuilderクラス
          */
         public <E extends AbstractClassFactory> Builder append(E classFactory) {
@@ -86,10 +91,10 @@ public class ClassFactoryManager {
         }
 
         /**
-         * JavaFileを作成するFactoryリストを設定する
+         * JavaFileを作成するFactoryクラスリストを追加します.
          *
-         * @param <E> 生成を行うクラスの型
-         * @param classFactories 生成を行うクラスリスト
+         * @param <E> AnnotationProcessorにてクラス生成を行うクラスの型
+         * @param classFactories AnnotationProcessorにてクラス生成を行うクラスのリスト
          * @return chainに使用するbuilderクラス
          */
         public <E extends AbstractClassFactory> Builder append(List<E> classFactories) {
@@ -98,7 +103,7 @@ public class ClassFactoryManager {
         }
 
         /**
-         * ClassFactoryManagerをインスタンス化する
+         * ClassFactoryManagerのインスタンスを構築します.
          *
          * @return ClassFactoryManagerインスタンス
          */

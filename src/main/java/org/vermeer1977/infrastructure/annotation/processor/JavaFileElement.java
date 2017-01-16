@@ -25,7 +25,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.TypeElement;
 
 /**
- * JavaFileの作成時にElementを元に情報を編集するヘルパクラス
+ * JavaFileの作成時にElementを元に情報を編集するヘルパクラスです.
  *
  * @author Yamashita,Takahiro
  */
@@ -34,11 +34,25 @@ public class JavaFileElement {
     private final Element element;
 
     private JavaFileElement(Element element) {
+        if (element == null) {
+            throw new ClassFactoryException("JavaFileElement must set element.");
+        }
         this.element = element;
     }
 
     /**
-     * 処理対象のElementを返却する
+     * 必須項目を設定してインスタンスを構築します.
+     *
+     * @param element AnnotaionProcessorで取得した要素（必須）
+     * @return {@code JavaFileElement}
+     * @throws ClassFactoryException 必須項目が未設定の場合
+     */
+    public static JavaFileElement of(Element element) {
+        return new JavaFileElement(element);
+    }
+
+    /**
+     * 処理対象のElementを返却します.
      *
      * @return 処理対象の{@link javax.lang.model.element.Element}
      */
@@ -47,17 +61,7 @@ public class JavaFileElement {
     }
 
     /**
-     * Factory
-     *
-     * @param element AnnotaionProcessorで取得した要素
-     * @return 生成したクラス
-     */
-    public static JavaFileElement of(Element element) {
-        return new JavaFileElement(element);
-    }
-
-    /**
-     * {@link javax.lang.model.element.ElementKind}が一致する要素をすべて取得する
+     * {@link javax.lang.model.element.ElementKind}が一致する要素をすべて返却する
      *
      * @param elementKind 取得対象の{@link javax.lang.model.element.ElementKind}
      * @return 抽出した要素リスト
@@ -70,9 +74,9 @@ public class JavaFileElement {
     }
 
     /**
-     * 指定のAnnotationが付与された要素を取得する
+     * 指定のAnnotationが付与された要素を返却する
      *
-     * @param <A> Annotationクラス
+     * @param <A> 処理対象のAnnotationの型
      * @param annotation 取得対象のAnnotation
      * @return 抽出した要素リスト
      */
@@ -84,18 +88,18 @@ public class JavaFileElement {
     }
 
     /**
-     * Annotationを付与しているクラス名を取得する.
+     * Annotationを付与しているクラス名を返却する.
      *
-     * @return Annotationを付与しているクラス名
+     * @return クラス名
      */
     public String toClassName() {
         return this.element.getSimpleName().toString();
     }
 
     /**
-     * パッケージ名称を取得する
+     * Annotationを付与しているクラス名のパッケージ名称を返却する.
      *
-     * @return Elementから編集したパッケージ名称
+     * @return パッケージ名称
      */
     public String toPackageName() {
         List<String> packNames = new ArrayList<>();
@@ -107,5 +111,4 @@ public class JavaFileElement {
         }
         return String.join(".", packNames);
     }
-
 }
