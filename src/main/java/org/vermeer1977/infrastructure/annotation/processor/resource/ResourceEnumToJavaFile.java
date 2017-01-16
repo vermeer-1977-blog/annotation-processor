@@ -66,6 +66,11 @@ public class ResourceEnumToJavaFile {
         private Control control;
         private Locale locale;
 
+        /**
+         * インスタンスを構築します.
+         *
+         * @param resourceBaseName 参照元のリソース名
+         */
         public Builder(@NonNull String resourceBaseName) {
             this.resourceBaseName = resourceBaseName;
         }
