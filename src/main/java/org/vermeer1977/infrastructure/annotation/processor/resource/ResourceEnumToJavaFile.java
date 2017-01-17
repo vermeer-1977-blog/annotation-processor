@@ -69,7 +69,7 @@ public class ResourceEnumToJavaFile {
      */
     public JavaFile toJavaFile() {
         String createClassName = this.toClassNameInitCap();
-        TypeSpec.Builder typeSpecBuilder = TypeSpec.enumBuilder(createClassName);
+        TypeSpec.Builder typeSpecBuilder = TypeSpec.enumBuilder(createClassName).addModifiers(Modifier.PUBLIC);
         Pattern pattern = Pattern.compile("\\{([0-9])\\}");
 
         // Enum 定数

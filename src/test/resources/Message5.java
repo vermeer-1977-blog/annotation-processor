@@ -11,7 +11,7 @@ import java.util.ResourceBundle;
  * @see org.vermeer1977.infrastructure.annotation.processor.ClassFactoryProcessor
  * @see org.vermeer1977.infrastructure.annotation.processor.resource
  */
-enum Message5 {
+public enum Message5 {
   /**
    * message551<br>
    * parameter count = 0
