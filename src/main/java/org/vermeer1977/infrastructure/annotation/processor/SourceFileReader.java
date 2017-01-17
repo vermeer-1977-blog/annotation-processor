@@ -96,8 +96,7 @@ public class SourceFileReader {
      *
      * @return コードの文字列
      */
-    @Override
-    public String toString() {
+    public String toSourceCode() {
         return this.sourceCode;
     }
 }

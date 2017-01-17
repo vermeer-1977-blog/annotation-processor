@@ -60,7 +60,7 @@ public class GenerateResourceEnumFactory extends AbstractClassFactory {
                 .map(ve -> {
                     return ResourceEnumToJavaFile.of(ve.getConstantValue().toString())
                             .packageName(packageName)
-                            .toJavaFile();
+                            .build().toJavaFile();
                 })
                 .collect(Collectors.toList());
     }
