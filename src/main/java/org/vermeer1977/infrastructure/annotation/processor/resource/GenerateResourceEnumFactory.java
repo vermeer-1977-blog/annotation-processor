@@ -17,6 +17,7 @@
 package org.vermeer1977.infrastructure.annotation.processor.resource;
 
 import com.squareup.javapoet.JavaFile;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.lang.model.element.Element;
@@ -51,7 +52,7 @@ public class GenerateResourceEnumFactory extends AbstractClassFactory {
     public List<JavaFile> toJavaFiles(Element element) {
         JavaFileElement javaFileElement = JavaFileElement.of(element);
         if (this.precondition(javaFileElement) == false) {
-            return null;
+            return new ArrayList<>();
         }
         String packageName = javaFileElement.toPackageName();
 
