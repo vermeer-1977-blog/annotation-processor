@@ -25,7 +25,8 @@ import java.lang.annotation.Target;
 /**
  * 生成する対象とするResourceBundleのBaseNameを指定するフィールドに付与するアノテーションです.
  * <P>
- * このアノテーションが付与されるフィールドは、GenerateResourceEnumインタフェースのメンバでなければいけません。
+ * このアノテーションが付与されるフィールドは、GenerateResourceEnumインタフェースのメンバでなければいけません。<br>
+ * アノテーションを付与するフィールドはfinalにしてください。そうしないと定数の読み込みができずビルドエラーになります。
  *
  * @see GenerateResourceEnum
  * @author Yamashita,Takahiro
