@@ -16,11 +16,18 @@
  */
 package org.vermeer1977.infrastructure.annotation.processor.resource;
 
+import com.google.common.io.Resources;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.ResourceBundle;
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.not;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
+import org.vermeer1977.infrastructure.annotation.processor.SourceFileReader;
 
 /**
  *
@@ -28,14 +35,83 @@ import org.junit.Test;
  */
 public class ResourceEnumToJavaFileTest {
 
+    @Ignore
     @Test
-    public void resourceからEnumクラスを作成する() {
+    public void 疎通() {
         String resourceBaseName = "resource.message";
-        try {
-            ResourceEnumToJavaFile.of(resourceBaseName).writeTo();
-        } catch (URISyntaxException | IOException ex) {
-            Assert.fail(Arrays.toString(ex.getStackTrace()));
-        }
+        System.out.println(ResourceEnumToJavaFile.of(resourceBaseName).toString());
     }
 
+    @Test(expected = java.util.MissingResourceException.class)
+    public void リソースが存在しない場合は例外スロー() {
+        String resourceBaseName = "resource.messagenotexist";
+        ResourceEnumToJavaFile.of(resourceBaseName).build().toJavaFile();
+    }
+
+    @Test
+    public void ロケールを指定_英語ロケールを参照_ロケール一致() throws IOException {
+        String resourceBaseName = "resource.message2";
+        String javaFile = ResourceEnumToJavaFile.of(resourceBaseName)
+                .locale(Locale.ENGLISH)
+                .build().toSourceCode();
+        String after = new SourceFileReader(Resources.getResource("Message2.java")).toSourceCode();
+        Assert.assertThat(javaFile, is(after));
+    }
+
+    @Test
+    public void ロケールを指定_英語ロケールを参照_ロケール不一致() throws IOException {
+        String resourceBaseName = "resource.message2";
+        String javaFile = ResourceEnumToJavaFile.of(resourceBaseName)
+                .build().toSourceCode();
+        String after = new SourceFileReader(Resources.getResource("Message2.java")).toSourceCode();
+        Assert.assertThat(javaFile, is(not(after)));
+    }
+
+    @Test
+    public void 存在しないロケール_デフォルトロケール_日本_が優先される() throws IOException {
+        String resourceBaseName = "resource.message3";
+        String javaFile = ResourceEnumToJavaFile.of(resourceBaseName)
+                .locale(Locale.ITALIAN)
+                .build().toSourceCode();
+        String after = new SourceFileReader(Resources.getResource("Message3.java")).toSourceCode();
+        Assert.assertThat(javaFile, is(after));
+    }
+
+    @Test
+    public void 存在しないロケール_ControlでFallbackを指定_デフォルトリソースが優先される() throws IOException {
+        String resourceBaseName = "resource.message4";
+        ResourceBundle.Control control = ResourceBundle.Control.getNoFallbackControl(
+                ResourceBundle.Control.FORMAT_DEFAULT);
+        String javaFile = ResourceEnumToJavaFile.of(resourceBaseName)
+                .locale(Locale.ITALIAN)
+                .control(control)
+                .build().toSourceCode();
+        String after = new SourceFileReader(Resources.getResource("Message4.java")).toSourceCode();
+        Assert.assertThat(javaFile, is(after));
+    }
+
+    @Test
+    public void ロケールを指定しない_Controlで優先ロケールを指定_英語を優先させる() throws IOException {
+        String resourceBaseName = "resource.message5";
+        ResourceBundle.Control control = new ResourceBundle.Control() {
+            @Override
+            public List<Locale> getCandidateLocales(
+                    String baseName, Locale locale) {
+                if (locale.equals(Locale.JAPAN)) {
+                    return Arrays.asList(Locale.ENGLISH,
+                                         locale,
+                                         Locale.JAPANESE,
+                                         Locale.ROOT);
+                } else {
+                    return super.getCandidateLocales(
+                            baseName, locale);
+                }
+            }
+        };
+        String javaFile = ResourceEnumToJavaFile.of(resourceBaseName)
+                .control(control)
+                .build().toSourceCode();
+        String after = new SourceFileReader(Resources.getResource("Message5.java")).toSourceCode();
+        Assert.assertThat(javaFile, is(after));
+    }
 }

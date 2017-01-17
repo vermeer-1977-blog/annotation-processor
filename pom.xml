@@ -3,21 +3,13 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>org.vermeer1977</groupId>
     <artifactId>annotation-processor</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <packaging>jar</packaging>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.16.10</version>
-            <scope>provided</scope>
-        </dependency>
-
-
         <!-- for test start -->
         <dependency>
             <groupId>junit</groupId>
@@ -32,6 +24,7 @@
             <groupId>com.squareup</groupId>
             <artifactId>javapoet</artifactId>
             <version>1.8.0</version>
+            <scope>compile</scope>
         </dependency>
 
         <dependency>
@@ -49,7 +42,6 @@
             <version>1.0-SNAPSHOT</version>
         </dependency>
         <!-- myproject ref end -->
-
     </dependencies>
 
     <build>
@@ -142,6 +134,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19.1</version>
+                <configuration>
+                    <skipTests>false</skipTests>
+                </configuration>
             </plugin>
 
             <plugin>

@@ -14,28 +14,22 @@
  *
  *  Copyright © 2017 Yamashita,Takahiro
  */
-package org.vermeer1977.infrastructure.annotation.processor.resource;
+package org.vermeer1977.infrastructure.annotation.processor;
 
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import org.junit.Assert;
 import org.junit.Test;
 
 /**
  *
  * @author Yamashita,Takahiro
  */
-public class ResourceEnumFactoryTest {
+public class JavaFileFactoryTest {
 
-    @Test
-    public void resourceからEnumクラスを作成する() {
-        String resourceBaseName = "resource.message";
-        try {
-            ResourceEnumToJavaFile.of(resourceBaseName).writeTo();
-        } catch (URISyntaxException | IOException ex) {
-            Assert.fail(Arrays.toString(ex.getStackTrace()));
-        }
+    public JavaFileFactoryTest() {
+    }
+
+    @Test(expected = ClassFactoryException.class)
+    public void コンストラクタ() {
+        JavaFileFactory instance = new JavaFileFactory(null);
     }
 
 }
