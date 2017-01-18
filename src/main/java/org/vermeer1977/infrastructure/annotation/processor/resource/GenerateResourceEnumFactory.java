@@ -50,7 +50,7 @@ public class GenerateResourceEnumFactory extends AbstractClassFactory {
      */
     @Override
     public List<JavaFile> toJavaFiles(Element element) {
-        JavaFileElement javaFileElement = JavaFileElement.of(element);
+        JavaFileElement javaFileElement = JavaFileElement.of(super.getProcessingEnvironment(), element);
         if (this.precondition(javaFileElement) == false) {
             return new ArrayList<>();
         }

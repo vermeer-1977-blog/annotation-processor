@@ -17,11 +17,12 @@
 package org.vermeer1977.infrastructure.annotation.processor;
 
 import java.lang.annotation.Annotation;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
+import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 
 /**
@@ -31,24 +32,27 @@ import javax.lang.model.element.TypeElement;
  */
 public class JavaFileElement {
 
+    private final ProcessingEnvironment processingEnv;
     private final Element element;
 
-    private JavaFileElement(Element element) {
-        if (element == null) {
-            throw new ClassFactoryException("JavaFileElement must set element.");
+    private JavaFileElement(ProcessingEnvironment processingEnv, Element element) {
+        if (processingEnv == null || element == null) {
+            throw new ClassFactoryException("JavaFileElement must set processingEnv and element.");
         }
+        this.processingEnv = processingEnv;
         this.element = element;
     }
 
     /**
      * 必須項目を設定してインスタンスを構築します.
      *
+     * @param processingEnv JavaFile作成時のメッセージ出力に使用する{@link javax.annotation.processing.ProcessingEnvironment}（必須）
      * @param element AnnotaionProcessorで取得した要素（必須）
      * @return {@code JavaFileElement}
      * @throws ClassFactoryException 必須項目が未設定の場合
      */
-    public static JavaFileElement of(Element element) {
-        return new JavaFileElement(element);
+    public static JavaFileElement of(ProcessingEnvironment processingEnv, Element element) {
+        return new JavaFileElement(processingEnv, element);
     }
 
     /**
@@ -102,13 +106,7 @@ public class JavaFileElement {
      * @return パッケージ名称
      */
     public String toPackageName() {
-        List<String> packNames = new ArrayList<>();
-        Element packageElem = element.getEnclosingElement();
-        while (packageElem != null) {
-            String packName = packageElem.getSimpleName().toString();
-            packNames.add(packName);
-            packageElem = packageElem.getEnclosingElement();
-        }
-        return String.join(".", packNames);
+        PackageElement packValue = processingEnv.getElementUtils().getPackageOf(element);
+        return packValue.getQualifiedName().toString();
     }
 }

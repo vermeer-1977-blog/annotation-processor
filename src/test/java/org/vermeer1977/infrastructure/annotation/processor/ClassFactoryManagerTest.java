@@ -19,11 +19,15 @@ package org.vermeer1977.infrastructure.annotation.processor;
 import com.squareup.javapoet.JavaFile;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import javax.annotation.processing.Filer;
 import javax.annotation.processing.Messager;
-import javax.lang.model.element.AnnotationMirror;
-import javax.lang.model.element.AnnotationValue;
+import javax.annotation.processing.ProcessingEnvironment;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
-import javax.tools.Diagnostic;
+import javax.lang.model.util.Elements;
+import javax.lang.model.util.Types;
 import org.junit.Test;
 
 /**
@@ -38,28 +42,42 @@ public class ClassFactoryManagerTest {
     @Test
     public void リストのappendの疎通() {
 
-        Messager messager = new Messager() {
+        ProcessingEnvironment processingEnvironment = new ProcessingEnvironment() {
             @Override
-            public void printMessage(Diagnostic.Kind kind, CharSequence msg) {
+            public Map<String, String> getOptions() {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 
             @Override
-            public void printMessage(Diagnostic.Kind kind, CharSequence msg, Element e) {
+            public Messager getMessager() {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 
             @Override
-            public void printMessage(Diagnostic.Kind kind, CharSequence msg, Element e, AnnotationMirror a) {
+            public Filer getFiler() {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
 
             @Override
-            public void printMessage(Diagnostic.Kind kind, CharSequence msg, Element e, AnnotationMirror a, AnnotationValue v) {
+            public Elements getElementUtils() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public Types getTypeUtils() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public SourceVersion getSourceVersion() {
+                throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+            }
+
+            @Override
+            public Locale getLocale() {
                 throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
             }
         };
-
         List<AbstractClassFactory> classFactories = Arrays.asList(new AbstractClassFactory(Override.class) {
             @Override
             public List<JavaFile> toJavaFiles(Element element) {
@@ -67,7 +85,7 @@ public class ClassFactoryManagerTest {
             }
         });
 
-        ClassFactoryManager instance = ClassFactoryManager.of(messager).append(classFactories).build();
+        ClassFactoryManager instance = ClassFactoryManager.of(processingEnvironment).append(classFactories).build();
 
     }
 

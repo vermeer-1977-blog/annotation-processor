@@ -20,6 +20,7 @@ import com.squareup.javapoet.JavaFile;
 import java.lang.annotation.Annotation;
 import java.util.List;
 import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.tools.Diagnostic;
 
@@ -31,7 +32,7 @@ import javax.tools.Diagnostic;
 public abstract class AbstractClassFactory {
 
     private final Class<? extends Annotation> targetAnnotaion;
-    private Messager messager;
+    private ProcessingEnvironment processingEnv;
 
     /**
      * 指定した生成対象マーカーとなるAnnotationInterfaceからインスタンスを構築します.
@@ -48,12 +49,21 @@ public abstract class AbstractClassFactory {
     }
 
     /**
-     * AnnotationProcessorの処理時に出力するメッセージ用の{@link javax.annotation.processing.Messager}を設定します.
+     * AnnotationProcessor実行時の環境情報である{@link javax.annotation.processing.ProcessingEnvironment}を設定します.
      *
-     * @param messager メッセージ出力用の{@link javax.annotation.processing.Messager}
+     * @param processingEnv AnnotationProcessor実行時の環境情報である{@link javax.annotation.processing.ProcessingEnvironment}
      */
-    public void setMessager(Messager messager) {
-        this.messager = messager;
+    public void setProcessingEnvironment(ProcessingEnvironment processingEnv) {
+        this.processingEnv = processingEnv;
+    }
+
+    /**
+     * AnnotationProcessor実行時の環境情報である{@link javax.annotation.processing.ProcessingEnvironment}を返却します.
+     *
+     * @return AnnotationProcessor実行時の環境情報である{@link javax.annotation.processing.ProcessingEnvironment}
+     */
+    public ProcessingEnvironment getProcessingEnvironment() {
+        return this.processingEnv;
     }
 
     /**
@@ -62,10 +72,10 @@ public abstract class AbstractClassFactory {
      * @return メッセージ出力用の{@link javax.annotation.processing.Messager}
      */
     Messager getMessager() {
-        if (this.messager == null) {
-            throw new ClassFactoryException("javax.annotation.processing.Messager is not set");
+        if (this.processingEnv == null) {
+            throw new ClassFactoryException("javax.annotation.processing.ProcessingEnvironment is not set");
         }
-        return this.messager;
+        return this.processingEnv.getMessager();
     }
 
     /**

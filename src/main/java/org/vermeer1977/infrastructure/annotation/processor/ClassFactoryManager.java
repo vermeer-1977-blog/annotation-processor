@@ -18,7 +18,7 @@ package org.vermeer1977.infrastructure.annotation.processor;
 
 import java.util.ArrayList;
 import java.util.List;
-import javax.annotation.processing.Messager;
+import javax.annotation.processing.ProcessingEnvironment;
 
 /**
  * AnnotationProcessorでクラスを生成するFactoryクラスのFirstClassCollection管理クラスです.
@@ -29,9 +29,9 @@ public class ClassFactoryManager {
 
     private final List<AbstractClassFactory> classFactories;
 
-    ClassFactoryManager(Messager messager, List<AbstractClassFactory> classFactories) {
+    ClassFactoryManager(ProcessingEnvironment processingEnv, List<AbstractClassFactory> classFactories) {
         classFactories.stream().forEach(classFactory -> {
-            classFactory.setMessager(messager);
+            classFactory.setProcessingEnvironment(processingEnv);
         });
         this.classFactories = classFactories;
     }
@@ -48,15 +48,15 @@ public class ClassFactoryManager {
     /**
      * 必須項目を設定します.
      *
-     * @param messager JavaFile作成時のメッセージ出力に使用する{@link javax.annotation.processing.Messager}（必須）
+     * @param processingEnv JavaFile作成時のメッセージ出力に使用する{@link javax.annotation.processing.ProcessingEnvironment}（必須）
      * @return {@link ClassFactoryManager.Builder}
      * @throws ClassFactoryException 必須項目が未設定の場合
      */
-    public static Builder of(Messager messager) {
-        if (messager == null) {
+    public static Builder of(ProcessingEnvironment processingEnv) {
+        if (processingEnv == null) {
             throw new ClassFactoryException("ClassFactoryManager must set messager.");
         }
-        return new ClassFactoryManager.Builder(messager);
+        return new ClassFactoryManager.Builder(processingEnv);
 
     }
 
@@ -65,16 +65,16 @@ public class ClassFactoryManager {
      */
     public static class Builder {
 
-        private final Messager messager;
+        private final ProcessingEnvironment processingEnv;
         private final List<AbstractClassFactory> classFactories;
 
         /**
          * 必須項目を設定します.
          *
-         * @param messager JavaFile作成時のメッセージ出力に使用する{@link javax.annotation.processing.Messager}
+         * @param processingEnv JavaFile作成時のメッセージ出力に使用する{@link javax.annotation.processing.ProcessingEnvironment}（必須）
          */
-        public Builder(Messager messager) {
-            this.messager = messager;
+        public Builder(ProcessingEnvironment processingEnv) {
+            this.processingEnv = processingEnv;
             this.classFactories = new ArrayList<>();
         }
 
@@ -108,7 +108,7 @@ public class ClassFactoryManager {
          * @return ClassFactoryManagerインスタンス
          */
         public ClassFactoryManager build() {
-            return new ClassFactoryManager(this.messager, this.classFactories);
+            return new ClassFactoryManager(this.processingEnv, this.classFactories);
         }
     }
 }

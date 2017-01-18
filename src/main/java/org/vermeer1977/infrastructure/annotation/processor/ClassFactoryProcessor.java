@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Set;
 import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.Filer;
-import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
@@ -42,7 +41,6 @@ import org.vermeer1977.infrastructure.annotation.processor.resource.GenerateReso
 public class ClassFactoryProcessor extends AbstractProcessor {
 
     private final boolean isDebug;
-    private Messager messager;
     private Filer filer;
     private JavaFileFactory javaFileFactory;
 
@@ -78,10 +76,9 @@ public class ClassFactoryProcessor extends AbstractProcessor {
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         this.filer = processingEnv.getFiler();
-        this.messager = super.processingEnv.getMessager();
 
         ClassFactoryManager classFactoryManager = ClassFactoryManager
-                .of(this.messager)
+                .of(super.processingEnv)
                 .append(new GenerateResourceEnumFactory())
                 .build();
         this.javaFileFactory = new JavaFileFactory(classFactoryManager);
