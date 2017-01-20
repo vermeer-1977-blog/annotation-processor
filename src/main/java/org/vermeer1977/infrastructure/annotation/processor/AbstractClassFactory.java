@@ -81,9 +81,6 @@ public abstract class AbstractClassFactory {
     /**
      * AnnotationProcessorによるJavaFile作成時のエラーメッセージを出力します.
      * <P>
-     * 事前に{@link #setMessager(javax.annotation.processing.Messager)
-     * }にて出力用の{@link javax.annotation.processing.Messager}を設定しておいてください.
-     *
      * @param message 出力メッセージ
      * @param element 対象Element
      * @throws ClassFactoryException Messagerを設定していない場合
