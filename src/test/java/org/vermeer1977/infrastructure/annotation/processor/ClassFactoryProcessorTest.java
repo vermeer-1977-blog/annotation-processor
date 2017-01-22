@@ -42,7 +42,7 @@ public class ClassFactoryProcessorTest {
     }
 
     @Test
-    public void 作成したEnumのパッケージは作成元クラスのパッケージ名とクラス名() {
+    public void 親パッケージ指定なし_サブパッケージ指定なし() {
         Truth.assert_()
                 .about(JavaSourceSubjectFactory.javaSource())
                 .that(JavaFileObjects.forResource(Resources.getResource("packagetest/SampleEnumPackage.java")))
@@ -53,11 +53,35 @@ public class ClassFactoryProcessorTest {
     }
 
     @Test
-    public void 疎通() {
+    public void 親パッケージ指定あり_サブパッケージ指定なし() {
         Truth.assert_()
                 .about(JavaSourceSubjectFactory.javaSource())
-                .that(JavaFileObjects.forResource(Resources.getResource("packagetest/SampleEnumSubPackageName.java")))
+                .that(JavaFileObjects.forResource(Resources.getResource("packagetest/EnumBasePackageName.java")))
                 .processedWith(new ClassFactoryProcessor())
-                .compilesWithoutError();
+                .compilesWithoutError()
+                .and()
+                .generatesSources(new SourceFileReader(Resources.getResource("basepackage/Message7.java")).toJavaFileObject());
+    }
+
+    @Test
+    public void 親パッケージ指定なし_サブパッケージ指定あり() {
+        Truth.assert_()
+                .about(JavaSourceSubjectFactory.javaSource())
+                .that(JavaFileObjects.forResource(Resources.getResource("packagetest/EnumSubPackageName.java")))
+                .processedWith(new ClassFactoryProcessor())
+                .compilesWithoutError()
+                .and()
+                .generatesSources(new SourceFileReader(Resources.getResource("packagetest/subpackage/Message8.java")).toJavaFileObject());
+    }
+
+    @Test
+    public void 親パッケージ指定あり_サブパッケージ指定あり() {
+        Truth.assert_()
+                .about(JavaSourceSubjectFactory.javaSource())
+                .that(JavaFileObjects.forResource(Resources.getResource("packagetest/EnumBaseSubPackageName.java")))
+                .processedWith(new ClassFactoryProcessor())
+                .compilesWithoutError()
+                .and()
+                .generatesSources(new SourceFileReader(Resources.getResource("basepackage/subpackage2/Message9.java")).toJavaFileObject());
     }
 }

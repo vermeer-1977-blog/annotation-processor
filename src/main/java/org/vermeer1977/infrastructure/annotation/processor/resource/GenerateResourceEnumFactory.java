@@ -54,7 +54,10 @@ public class GenerateResourceEnumFactory extends AbstractClassFactory {
         if (this.precondition(javaFileElement) == false) {
             return new ArrayList<>();
         }
-        String packageName = javaFileElement.toPackageName();
+        String packageName = javaFileElement.toPackageName(
+                element.getAnnotation(GenerateResourceEnum.class).basePackageName(),
+                element.getAnnotation(GenerateResourceEnum.class).subPackageName()
+        );
 
         return javaFileElement.filter(TargetResource.class).stream()
                 .map(VariableElement.class::cast)

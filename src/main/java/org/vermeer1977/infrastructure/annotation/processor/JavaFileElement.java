@@ -101,10 +101,9 @@ public class JavaFileElement {
     }
 
     /**
-     * Annotationを付与しているクラス名のパッケージ名称を返却する.
+     * Annotationを付与しているクラス名のパッケージパスを返却する.
      * <P>
-     * パッケージ名は{@link org.vermeer1977.infrastructure.annotation.processor.resource.GenerateResourceEnum}が
-     * 付与されたクラスのパッケージ名にクラス名を小文字にしたサブパッケージを追記したものです. ただし、生成元の資産が
+     * パッケージパスはアノテーションを付与したクラスのパッケージ名にクラス名を小文字にしたサブパッケージを追記したものです. ただし、生成元の資産が
      * デフォルトパッケージの場合は、テストまたは特殊なケースであると考えられるためサブパッケージを付与せずデフォルトパッケージに並列で出力します。
      *
      * @return パッケージ名称
@@ -116,4 +115,40 @@ public class JavaFileElement {
                ? ""
                : packagePath + "." + className;
     }
+
+    /**
+     * Annotationを付与しているクラス名のパッケージパスを返却する.
+     * <P>
+     * {@literal basePackage}空文字、{@literal subPackage}空文字の場合はデフォルト設定<br>
+     * パッケージパスはアノテーションを付与したクラスのパッケージパスにクラス名を小文字にしたサブパッケージを追記したものを返却します.
+     * ただし、生成元の資産がデフォルトパッケージの場合は、テストまたは特殊なケースであると考えられるためサブパッケージを付与せずデフォルトパッケージに並列で出力します。
+     * <P>
+     * {@literal basePackage}設定あり、{@literal subPackage}が空文字の場合は、{@literal basePackage}のみでパッケージパスを返却します.<br>
+     * 意図して親となるパッケージをしている場合は、直接指定をしたい場合と考えられるのでサブパッケージの追記はしない要件と想定しました.
+     * <P>
+     * {@literal basePackage}空文字、{@literal subPackage}設定ありの場合は、アノテーションを付与したクラスの
+     * パッケージパスに{@literal subPackage}を小文字にしたサブパッケージを追記して返却します.
+     * <P>
+     * {@literal basePackage}設定あり、{@literal subPackage}設定あり場合は、{@literal basePackage}と{@literal subPackage}を
+     * 小文字にしたサブパッケージを追記して返却します.
+     *
+     *
+     * @param basePackage ルートからのパッケージパス
+     * @param subPackage 最終枝のパッケージ名
+     * @return パッケージパス
+     */
+    public String toPackageName(String basePackage, String subPackage) {
+        if (basePackage.equals("") == true && subPackage.equals("") == true) {
+            return this.toPackageName();
+        }
+        if (basePackage.equals("") == false && subPackage.equals("") == true) {
+            return basePackage.toLowerCase(Locale.ENGLISH);
+        }
+        if (basePackage.equals("") == true && subPackage.equals("") == false) {
+            return processingEnv.getElementUtils().getPackageOf(element).getQualifiedName().toString()
+                   + "." + subPackage.toLowerCase(Locale.ENGLISH);
+        }
+        return basePackage.toLowerCase(Locale.ENGLISH) + "." + subPackage.toLowerCase(Locale.ENGLISH);
+    }
+
 }

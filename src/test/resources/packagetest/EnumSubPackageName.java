@@ -7,10 +7,10 @@ import org.vermeer1977.infrastructure.annotation.processor.resource.TargetResour
  *
  * @author Yamashita,Takahiro
  */
-@GenerateResourceEnum(basePackageName = "", subPackageName = "")
-public class SampleEnumSubPackageName {
+@GenerateResourceEnum(subPackageName = "SUBPACKAGE")
+public class EnumSubPackageName {
 
     @TargetResource
-    final String resourceName = "resource.message6";
+    final String resourceName = "resource.message8";
 
 }
