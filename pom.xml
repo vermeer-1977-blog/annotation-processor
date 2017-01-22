@@ -35,13 +35,6 @@
         </dependency>
         <!-- annotation processor end -->
 
-        <!-- myproject ref start -->
-        <dependency>
-            <groupId>org.vermeer1977</groupId>
-            <artifactId>resource-bundle</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-        <!-- myproject ref end -->
     </dependencies>
 
     <build>
@@ -58,22 +51,21 @@
                 </configuration>
             </plugin>
 
-            <!--
-                        <plugin>
-                            <groupId>org.apache.maven.plugins</groupId>
-                            <artifactId>maven-source-plugin</artifactId>
-                            <version>3.0.1</version>
-                            <executions>
-                                <execution>
-                                    <id>attach-sources</id>
-                                    <phase>package</phase>
-                                    <goals>
-                                        <goal>jar</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                        </plugin>
-            -->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
