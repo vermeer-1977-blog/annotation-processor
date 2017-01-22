@@ -51,4 +51,13 @@ public class ClassFactoryProcessorTest {
                 .and()
                 .generatesSources(new SourceFileReader(Resources.getResource("packagetest/sampleenumpackage/Message6.java")).toJavaFileObject());
     }
+
+    @Test
+    public void 疎通() {
+        Truth.assert_()
+                .about(JavaSourceSubjectFactory.javaSource())
+                .that(JavaFileObjects.forResource(Resources.getResource("packagetest/SampleEnumSubPackageName.java")))
+                .processedWith(new ClassFactoryProcessor())
+                .compilesWithoutError();
+    }
 }

@@ -31,7 +31,24 @@ import java.lang.annotation.Target;
  */
 @Documented
 @Target(ElementType.TYPE)
-@Retention(RetentionPolicy.CLASS)
+@Retention(RetentionPolicy.SOURCE)
 public @interface GenerateResourceEnum {
 
+    /**
+     * 生成クラスのベースパッケージ名.
+     * <P>
+     * デフォルトは生成したクラスのパッケージ名
+     *
+     * @return 指定したベースパッケージ名
+     */
+    String basePackageName() default "";
+
+    /**
+     * 生成クラスのベースパッケージに付与するサブパッケージ名.
+     * <P>
+     * デフォルトは生成したクラス名を小文字にした文字列を付与します.
+     *
+     * @return 指定したサブパッケージ名
+     */
+    String subPackageName() default "";
 }
