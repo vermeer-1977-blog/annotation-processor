@@ -31,7 +31,7 @@ import javax.tools.Diagnostic;
  */
 public abstract class AbstractClassFactory {
 
-    private final Class<? extends Annotation> targetAnnotaion;
+    private final Class<? extends Annotation> targetClassAnnotation;
     private ProcessingEnvironment processingEnv;
 
     /**
@@ -45,7 +45,7 @@ public abstract class AbstractClassFactory {
         if (targetAnnotaion == null) {
             throw new ClassFactoryException("AbstractClassFactory must set targetAnnotaion.");
         }
-        this.targetAnnotaion = targetAnnotaion;
+        this.targetClassAnnotation = targetAnnotaion;
     }
 
     /**
@@ -102,7 +102,7 @@ public abstract class AbstractClassFactory {
         if (element == null) {
             throw new ClassFactoryException("AbstractClassFactory must set targetAnnotaion.");
         }
-        return element.getAnnotation(targetAnnotaion) != null;
+        return element.getAnnotation(targetClassAnnotation) != null;
     }
 
     /**
