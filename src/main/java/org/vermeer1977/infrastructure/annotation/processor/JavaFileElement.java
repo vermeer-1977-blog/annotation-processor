@@ -18,11 +18,11 @@ package org.vermeer1977.infrastructure.annotation.processor;
 
 import java.lang.annotation.Annotation;
 import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
-import javax.lang.model.element.PackageElement;
 import javax.lang.model.element.TypeElement;
 
 /**
@@ -102,11 +102,18 @@ public class JavaFileElement {
 
     /**
      * Annotationを付与しているクラス名のパッケージ名称を返却する.
+     * <P>
+     * パッケージ名は{@link org.vermeer1977.infrastructure.annotation.processor.resource.GenerateResourceEnum}が
+     * 付与されたクラスのパッケージ名にクラス名を小文字にしたサブパッケージを追記したものです. ただし、生成元の資産が
+     * デフォルトパッケージの場合は、テストまたは特殊なケースであると考えられるためサブパッケージを付与せずデフォルトパッケージに並列で出力します。
      *
      * @return パッケージ名称
      */
     public String toPackageName() {
-        PackageElement packValue = processingEnv.getElementUtils().getPackageOf(element);
-        return packValue.getQualifiedName().toString();
+        String packagePath = processingEnv.getElementUtils().getPackageOf(element).getQualifiedName().toString();
+        String className = this.toClassName().toLowerCase(Locale.ENGLISH);
+        return packagePath.equals("")
+               ? ""
+               : packagePath + "." + className;
     }
 }

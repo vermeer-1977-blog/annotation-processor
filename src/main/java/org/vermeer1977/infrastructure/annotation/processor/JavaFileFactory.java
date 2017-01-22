@@ -34,17 +34,22 @@ public class JavaFileFactory {
 
     private final ClassFactoryManager classFactoryManager;
 
+    private JavaFileFactory(ClassFactoryManager classFactoryManager) {
+        this.classFactoryManager = classFactoryManager;
+    }
+
     /**
      * 指定したクラス生成Factory管理クラスからインスタンスを構築します.
      *
      * @param classFactoryManager AnnotationProcessorでクラスを生成するFactoryのFirstClassCollection管理クラス（必須）
+     * @return 構築したインスタンス
      * @throws ClassFactoryException 必須項目が未設定の場合
      */
-    public JavaFileFactory(ClassFactoryManager classFactoryManager) {
+    public static JavaFileFactory of(ClassFactoryManager classFactoryManager) {
         if (classFactoryManager == null) {
             throw new ClassFactoryException("JavaFileFactory must set classFactoryManager.");
         }
-        this.classFactoryManager = classFactoryManager;
+        return new JavaFileFactory(classFactoryManager);
     }
 
     /**

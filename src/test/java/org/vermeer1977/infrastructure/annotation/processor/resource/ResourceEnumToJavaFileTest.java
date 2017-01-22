@@ -39,7 +39,7 @@ public class ResourceEnumToJavaFileTest {
     @Test
     public void 疎通() {
         String resourceBaseName = "resource.message";
-        System.out.println(ResourceEnumToJavaFile.of(resourceBaseName).toString());
+        System.out.println(ResourceEnumToJavaFile.of(resourceBaseName).build().toSourceCode());
     }
 
     @Test(expected = java.util.MissingResourceException.class)

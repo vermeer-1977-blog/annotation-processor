@@ -78,10 +78,10 @@ public class ClassFactoryProcessor extends AbstractProcessor {
         this.filer = processingEnv.getFiler();
 
         ClassFactoryManager classFactoryManager = ClassFactoryManager
-                .of(super.processingEnv)
+                .of(processingEnv)
                 .append(new GenerateResourceEnumFactory())
                 .build();
-        this.javaFileFactory = new JavaFileFactory(classFactoryManager);
+        this.javaFileFactory = JavaFileFactory.of(classFactoryManager);
     }
 
     /**
